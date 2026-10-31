@@ -29,3 +29,4 @@ Test in the UI (deployment > Create request) with `{"input": 21}` -> `{"output":
 - `environment` uses the full name `ubiops-ubuntu24-04-python3-13`: the API normalizes the short alias, which made Terraform report an inconsistent result.
 - Smallest instance type group (`256 MB + 0.0625 vCPU`): the workload is trivial and credits are limited.
 - `terraform.tfvars` and state are gitignored: state can contain sensitive values.
+# ubiops-number-multiplier
