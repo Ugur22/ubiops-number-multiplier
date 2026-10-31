@@ -1,0 +1,23 @@
+# Terraform working data and state (state can contain secrets)
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfplan
+tfplan
+
+# Variable files hold real values; the .example file is the template
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+
+# Generated deployment zip
+build/
+
+# Local secrets and Python/editor noise
+.env
+.env.*
+__pycache__/
+.venv/
+.DS_Store
