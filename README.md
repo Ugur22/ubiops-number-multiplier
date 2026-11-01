@@ -1,6 +1,6 @@
 # UbiOps number multiplier
 
-Terraform-managed UbiOps deployment (in an existing project) that multiplies a number (`input` -> `output = input * factor`, factor 3).
+Terraform-managed UbiOps deployment (in an existing project) that multiplies a number (`input` -> `output = input * factor`; the factor is set in `deployment_package/deployment.py`).
 
 ## Layout
 - `deployment_package/deployment.py` – the code UbiOps runs
@@ -15,7 +15,7 @@ export UBIOPS_BASE_URL="https://api.ubiops.com/v2.1"
 cp terraform.tfvars.example terraform.tfvars   # fill instance_type_group_name
 terraform init && terraform plan && terraform apply
 ```
-Test in the UI (deployment > Create request) with `{"input": 21}` -> `{"output": 63}`.
+Test in the UI (deployment > Create request) with `{"input": 10}`; the output is 10 times the factor in `deployment.py`.
 
 ## Decisions
 - Project is created in the UI, not Terraform: API tokens are project-scoped, so a token cannot exist before its project.

@@ -13,7 +13,7 @@ resource "terraform_data" "package_hash" {
 resource "ubiops_deployment" "multiplier" {
   project_name = var.project_name
   name         = "number-multiplier"
-  description  = "Multiplies a number by a fixed factor (3 by default)."
+  description  = "Multiplies a number by a fixed factor (set in deployment.py)."
   input_type   = "structured"
   output_type  = "structured"
 
