@@ -4,10 +4,16 @@ data "archive_file" "package" {
   output_path = "${path.module}/build/multiplier.zip"
 }
 
+# The version only references the zip by path, so Terraform can't see code changes.
+# Tracking the package hash here lets us force a new version when the code changes.
+resource "terraform_data" "package_hash" {
+  input = data.archive_file.package.output_sha256
+}
+
 resource "ubiops_deployment" "multiplier" {
   project_name = var.project_name
   name         = "number-multiplier"
-  description  = "Multiplies a number by a fixed factor (2 by default)."
+  description  = "Multiplies a number by a fixed factor (3 by default)."
   input_type   = "structured"
   output_type  = "structured"
 
@@ -25,4 +31,8 @@ resource "ubiops_deployment_version" "v1" {
 
   # Provider default is 5; the current subscription caps instances at 1.
   maximum_instances = 1
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.package_hash]
+  }
 }

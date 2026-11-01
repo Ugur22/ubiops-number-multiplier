@@ -1,6 +1,6 @@
 # UbiOps number multiplier
 
-Terraform-managed UbiOps deployment (in an existing project) that multiplies a number (`input` -> `output = input * factor`, factor 2).
+Terraform-managed UbiOps deployment (in an existing project) that multiplies a number (`input` -> `output = input * factor`, factor 3).
 
 ## Layout
 - `deployment_package/deployment.py` – the code UbiOps runs
@@ -11,18 +11,18 @@ Terraform-managed UbiOps deployment (in an existing project) that multiplies a n
 ```sh
 export UBIOPS_API_TOKEN="Token <your token>"   # UbiOps UI > Settings > API tokens
 export UBIOPS_BASE_URL="https://api.ubiops.com/v2.1"
-# 1. Create a project in the UI; 2. Users & permissions > API Tokens > add token with role project-editor
+# 1. Create a project in the UI; 2. Users & permissions > API Tokens > add token with role project-admin
 cp terraform.tfvars.example terraform.tfvars   # fill instance_type_group_name
 terraform init && terraform plan && terraform apply
 ```
-Test in the UI (deployment > Create request) with `{"input": 21}` -> `{"output": 42.0}`.
+Test in the UI (deployment > Create request) with `{"input": 21}` -> `{"output": 63}`.
 
 ## Decisions
 - Project is created in the UI, not Terraform: API tokens are project-scoped, so a token cannot exist before its project.
 - Provider auth via env vars, never in code.
 - Input/output are typed `double` fields (structured) so the API validates requests.
-- Package is zipped by `archive_file`, so one `apply` redeploys on code change.
-- Factor is read from an env var in the code (default 2) so it can later be a Terraform-managed setting without touching the logic.
+- Package is zipped by `archive_file`. The version only references the zip by path, so a `terraform_data` resource tracks the zip's hash and `replace_triggered_by` replaces the version on code change (found when an edited `deployment.py` showed no diff).
+- Factor is read from an env var in the code (default 3) so it can later be a Terraform-managed setting without touching the logic.
 - Changing project/resource names forces replacement; always read the plan.
 - Token role is `project-admin`: `project-editor` can create but not delete versions, so replacements and `terraform destroy` returned 403.
 - `maximum_instances = 1`: the provider default (5) exceeds the current subscription limit; the API rejects it with a 400.
