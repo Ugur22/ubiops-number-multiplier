@@ -18,3 +18,9 @@ Test in the UI (deployment > Create request) with `{"input": 10}`; the output is
 - Project is created in the UI, not Terraform: API tokens are project-scoped, so a token cannot exist before its project.
 - Token role is `project-admin`: `project-editor` can create but not delete versions, so replacements and `terraform destroy` returned 403.
 - Provider auth via env vars (`UBIOPS_API_TOKEN`, `UBIOPS_BASE_URL`), never in code or in a committed file.
+- Version is replaced when the code changes: it only references the zip by path, so Terraform saw no diff. A `terraform_data` resource tracks the zip hash and `replace_triggered_by` uses it.
+- Input/output are typed `double` fields so the API validates requests.
+- Factor is read from an env var (default 4) so it can later be managed in Terraform without touching the logic.
+- `maximum_instances = 1`: the provider default (5) exceeds the subscription limit (API returns 400).
+- `environment` uses the full name `ubiops-ubuntu24-04-python3-13`: the short alias is normalized by the API and causes an inconsistent-result error.
+- `terraform.tfvars` and state are gitignored: state can contain sensitive values.
